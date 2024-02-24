@@ -331,7 +331,9 @@ if (!is_wp_error($response) && wp_remote_retrieve_response_code($response) === 2
                 <td>
                     <select name="country_code" id="country_code" required>
                         <?php foreach ($calling_codes as $calling_code) : ?>
-                            <option value="<?php echo esc_attr($calling_code['callingCodes'][0]); ?>" <?php selected($calling_code['callingCodes'][0], $contact['country_code'] ?? ''); ?>><?php echo esc_html($calling_code['name']) . ' (' . esc_html($calling_code['callingCodes'][0]) . ')'; ?></option>
+                            <option value="<?php echo esc_attr($calling_code['calling_code']); ?>" <?php selected($calling_code['calling_code'], $contact['country_code'] ?? ''); ?>>
+                                <?php echo esc_html($calling_code['name']) . ' (' . esc_html($calling_code['calling_code']) . ')'; ?>
+                            </option>
                         <?php endforeach; ?>
                     </select>
                 </td>
