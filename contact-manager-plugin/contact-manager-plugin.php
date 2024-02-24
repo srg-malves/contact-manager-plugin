@@ -8,7 +8,7 @@ Author: Your Name
 
 // Enqueue necessary scripts and styles
 function contact_manager_enqueue_scripts() {
-    // Add your scripts and styles enqueue here
+    
 }
 add_action('admin_enqueue_scripts', 'contact_manager_enqueue_scripts');
 
@@ -57,7 +57,7 @@ function contact_manager_menu() {
 }
 add_action('admin_menu', 'contact_manager_menu');
 
-// Function to display the people list page
+// Display the people list page
 function people_list_page() {
     global $wpdb;
 
@@ -130,7 +130,7 @@ function people_list_page() {
     <?php
 }
 
-// Function to display the add/edit person page
+// Display the add/edit person page
 function add_edit_person_page() {
     global $wpdb;
 
@@ -217,7 +217,7 @@ function add_edit_person_page() {
     <?php
 }
 
-// Function to display the add/edit contact page
+// Display the add/edit contact page
 function add_edit_contact_page() {
     global $wpdb;
 
