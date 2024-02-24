@@ -3,12 +3,12 @@
 Plugin Name: Contact Manager
 Description: A WordPress plugin to manage contacts.
 Version: 1.0
-Author: Your Name
+Author: Sergio Pinto
 */
 
 // Enqueue necessary scripts and styles
 function contact_manager_enqueue_scripts() {
-    
+    // Add your scripts and styles enqueue here
 }
 add_action('admin_enqueue_scripts', 'contact_manager_enqueue_scripts');
 
@@ -57,7 +57,7 @@ function contact_manager_menu() {
 }
 add_action('admin_menu', 'contact_manager_menu');
 
-// Display the people list page
+// Function to display the people list page
 function people_list_page() {
     global $wpdb;
 
@@ -120,6 +120,7 @@ function people_list_page() {
                         <td><?php echo $person['email']; ?></td>
                         <td>
                             <a href="<?php echo admin_url('admin.php?page=add-edit-person&id=' . $person['ID']); ?>">Edit</a>
+                            <a href="<?php echo admin_url('admin.php?page=person-details&person_id=' . $person['ID']); ?>">Details</a>
                             <a href="<?php echo add_query_arg(array('action' => 'delete', 'id' => $person['ID']), wp_nonce_url(admin_url('admin.php?page=people-list'), 'delete_person')); ?>" class="delete" onclick="return confirm('Are you sure you want to delete this person?');">Delete</a>
                         </td>
                     </tr>
@@ -130,7 +131,99 @@ function people_list_page() {
     <?php
 }
 
-// Display the add/edit person page
+// Function to display the person details page
+function person_details_page() {
+    global $wpdb;
+
+    $people_table_name = $wpdb->prefix . 'contact_manager_people';
+    $contacts_table_name = $wpdb->prefix . 'contact_manager_contacts';
+
+    // Get person ID from the URL
+    $person_id = isset($_GET['person_id']) ? intval($_GET['person_id']) : 0;
+
+    // Fetch person data
+    $person = $wpdb->get_row($wpdb->prepare("SELECT * FROM $people_table_name WHERE ID = %d", $person_id), ARRAY_A);
+
+    if (!$person) {
+        echo "Person not found";
+        return;
+    }
+
+    // Fetch contacts associated with the person
+    $contacts = $wpdb->get_results($wpdb->prepare("SELECT * FROM $contacts_table_name WHERE person_id = %d", $person_id), ARRAY_A);
+    ?>
+    <div class="wrap">
+        <h1 class="wp-heading-inline">Person Details - <?php echo esc_html($person['name']); ?></h1>
+
+        <table class="wp-list-table widefat fixed striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Country Code</th>
+                    <th>Number</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($contacts as $contact) : ?>
+                    <tr>
+                        <td><?php echo esc_html($contact['ID']); ?></td>
+                        <td><?php echo esc_html($contact['country_code']); ?></td>
+                        <td><?php echo esc_html($contact['number']); ?></td>
+                        <td>
+                            <a href="<?php echo admin_url('admin.php?page=edit-contact&id=' . $contact['ID']); ?>">Edit</a>
+                            <a href="<?php echo wp_nonce_url(admin_url('admin.php?page=person-details&person_id=' . $person_id . '&action=delete_contact&id=' . $contact['ID']), 'delete_contact'); ?>" class="delete" onclick="return confirm('Are you sure you want to delete this contact?');">Delete</a>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+    <?php
+}
+
+// Function to display the edit contact page
+function edit_contact_page() {
+    global $wpdb;
+
+    $contacts_table_name = $wpdb->prefix . 'contact_manager_contacts';
+
+    // Get contact ID from the URL
+    $contact_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+
+    // Fetch contact data
+    $contact = $wpdb->get_row($wpdb->prepare("SELECT * FROM $contacts_table_name WHERE ID = %d", $contact_id), ARRAY_A);
+
+    if (!$contact) {
+        echo "Contact not found";
+        return;
+    }
+
+    // Display edit contact form
+    ?>
+    <div class="wrap">
+        <h1 class="wp-heading-inline">Edit Contact</h1>
+
+        <form method="post" action="">
+            <table class="form-table">
+                <tr>
+                    <th><label for="country_code">Country Code</label></th>
+                    <td><input type="text" name="country_code" id="country_code" value="<?php echo esc_attr($contact['country_code']); ?>" required></td>
+                </tr>
+                <tr>
+                    <th><label for="number">Number</label></th>
+                    <td><input type="text" name="number" id="number" value="<?php echo esc_attr($contact['number']); ?>" required></td>
+                </tr>
+            </table>
+
+            <input type="hidden" name="contact_id" value="<?php echo esc_attr($contact_id); ?>">
+            <?php submit_button('Update Contact'); ?>
+        </form>
+    </div>
+    <?php
+}
+
+// Function to display the add/edit person page
 function add_edit_person_page() {
     global $wpdb;
 
@@ -217,7 +310,7 @@ function add_edit_person_page() {
     <?php
 }
 
-// Display the add/edit contact page
+// Function to display the add/edit contact page
 function add_edit_contact_page() {
     global $wpdb;
 
