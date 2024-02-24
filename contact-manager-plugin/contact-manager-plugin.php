@@ -46,6 +46,7 @@ register_activation_hook(__FILE__, 'contact_manager_activate');
 // Define plugin pages
 function contact_manager_menu() {
     add_menu_page('People', 'People', 'manage_options', 'people-list', 'people_list_page');
+    add_submenu_page('people-list', 'Person Details', 'Person Details', 'manage_options', 'person-details', 'person_details_page');
     add_submenu_page('people-list', 'Add/Edit Person', 'Add/Edit Person', 'manage_options', 'add-edit-person', 'add_edit_person_page');
     add_submenu_page('people-list', 'Add/Edit Contact', 'Add/Edit Contact', 'manage_options', 'add-edit-contact', 'add_edit_contact_page');
 }
@@ -165,7 +166,7 @@ function person_details_page() {
                         <td><?php echo esc_html($contact['country_code']); ?></td>
                         <td><?php echo esc_html($contact['number']); ?></td>
                         <td>
-                            <a href="<?php echo admin_url('admin.php?page=edit-contact&id=' . $contact['ID']); ?>">Edit</a>
+                            <a href="<?php echo admin_url('admin.php?page=add-edit-contact&id=' . $contact['ID']); ?>">Edit</a>
                             <a href="<?php echo wp_nonce_url(admin_url('admin.php?page=person-details&person_id=' . $person_id . '&action=delete_contact&id=' . $contact['ID']), 'delete_contact'); ?>" class="delete" onclick="return confirm('Are you sure you want to delete this contact?');">Delete</a>
                         </td>
                     </tr>
