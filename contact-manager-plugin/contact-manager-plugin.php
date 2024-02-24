@@ -6,12 +6,6 @@ Version: 1.0
 Author: Sergio Pinto
 */
 
-// Enqueue necessary scripts and styles
-function contact_manager_enqueue_scripts() {
-    // Add your scripts and styles enqueue here
-}
-add_action('admin_enqueue_scripts', 'contact_manager_enqueue_scripts');
-
 // Create database tables during plugin activation
 function contact_manager_activate() {
     global $wpdb;
